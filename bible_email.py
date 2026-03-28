@@ -11,6 +11,7 @@ load_dotenv()
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
 SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
 RECEIVER_EMAIL = os.environ.get("RECEIVER_EMAIL")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 
 def get_bible_verse():
@@ -23,6 +24,26 @@ def get_bible_verse():
 def generateSubject():
     subject = "📖 Your Morning Bible Verse"
     return subject
+
+def get_reflection(verse_text, verse_reference):
+    response = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Given this Bible verse: '{verse_text}' - {verse_reference}. Write a short 3 sentence devotional reflection. Explain what it means and one practical way to apply it in daily life. Keep it warm, encouraging and simple."
+                }
+            ]
+        }
+    )
+    data = response.json()
+    return data["choices"][0]["message"]["content"]
 
 def generateBody():
     body = f"""
@@ -39,7 +60,9 @@ def generateBody():
             <!-- Verse Card -->
             <div style="background:#fdf8f0; border-left: 5px solid #c9a84c; margin:40px 30px; padding:30px; border-radius:8px;">
                 <p style="font-size:20px; color:#2c2c2c; line-height:1.8; margin:0 0 20px 0;">"{verse_text}"</p>
-                <p style="font-size:15px; color:#c9a84c; font-weight:bold; margin:0;">— {verse_reference}</p>
+                <p style="font-size:15px; color:#c9a84c; font-weight:bold; margin:0 0 20px 0;">— {verse_reference}</p>
+                <hr style="border:none; border-top:1px solid #e8dcc8; margin: 20px 0;">
+                <p style="font-size:15px; color:#555; line-height:1.8; margin:0;"><strong>Reflection:</strong> {reflection}</p>
             </div>
 
             <!-- Footer -->
@@ -53,7 +76,7 @@ def generateBody():
     """
     return body
 
-def send_email(verse_text, verse_reference):
+def send_email(verse_text, verse_reference, reflection):
     subject = generateSubject()
     body = generateBody()
 
@@ -69,4 +92,5 @@ def send_email(verse_text, verse_reference):
         print("Email sent successfully!")
 
 verse_text, verse_reference = get_bible_verse()
-send_email(verse_text, verse_reference)
+reflection = get_reflection(verse_text, verse_reference)
+send_email(verse_text, verse_reference, reflection)
