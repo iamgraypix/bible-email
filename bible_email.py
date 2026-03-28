@@ -2,11 +2,13 @@ import smtplib
 import requests
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import os
 
 # Your email settings
-SENDER_EMAIL = "charlesartillero@gmail.com"
-SENDER_PASSWORD = "ukhtdogiaglmnzec"
-RECEIVER_EMAIL = "charlesartillero@gmail.com"
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
+SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
+RECEIVER_EMAIL = os.environ.get("RECEIVER_EMAIL")
+
 
 def get_bible_verse():
     response = requests.get("https://bible-api.com/?random=verse")
