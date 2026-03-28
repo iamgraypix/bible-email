@@ -14,7 +14,7 @@ def send_email(verse_text, verse_reference, reflection):
     password = os.environ.get("SENDER_PASSWORD")
 
     msg = MIMEMultipart()
-    msg["From"] = f"God's Word 📖 <{sender}>"
+    msg["From"] = f"God's Word 📖"
     msg["To"] = receiver
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "html"))
