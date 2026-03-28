@@ -42,7 +42,7 @@ def get_reflection(verse_text, verse_reference):
             ]
         }
     )
-    print(data)
+    data = response.json()
     return data["choices"][0]["message"]["content"]
 
 def generateBody():
