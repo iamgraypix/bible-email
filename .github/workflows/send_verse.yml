@@ -2,7 +2,12 @@ name: Daily Bible Verse
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # 6AM Philippine time (UTC+8)
+    - cron: '0 22 * * *'   # 6AM Philippine time
+    - cron: '0 1 * * *'    # 9AM Philippine time
+    - cron: '0 4 * * *'    # 12NN Philippine time
+    - cron: '0 7 * * *'    # 3PM Philippine time
+    - cron: '0 10 * * *'   # 6PM Philippine time
+    - cron: '0 13 * * *'   # 9PM Philippine time
   workflow_dispatch:       # allows manual trigger
 
 jobs:
