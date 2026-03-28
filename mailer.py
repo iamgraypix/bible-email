@@ -1,7 +1,5 @@
-import smtplib
 import os
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import requests
 from email_builder import generateSubject, generateBody
 
 
@@ -9,17 +7,27 @@ def send_email(verse_text, verse_reference, reflection):
     subject = generateSubject()
     body = generateBody(verse_text, verse_reference, reflection)
 
-    sender = os.environ.get("SENDER_EMAIL")
-    receiver = os.environ.get("RECEIVER_EMAIL")
-    password = os.environ.get("SENDER_PASSWORD")
+    sender = "God <onboarding@resend.dev>"
+    receiver = os.environ.get("RECEIVER_EMAIL").split(",")
+    resend_api_key = os.environ.get("RESEND_API_KEY")
 
-    msg = MIMEMultipart()
-    msg["From"] = f"God's Word 📖 <{sender}>"
-    msg["To"] = receiver
-    msg["Subject"] = subject
-    msg.attach(MIMEText(body, "html"))
+    response = requests.post(
+        "https://api.resend.com/emails",
+        headers={
+            "Authorization": f"Bearer {resend_api_key}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "from": sender,
+            "to": receiver,
+            "subject": subject,
+            "html": body
+        }
+    )
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(sender, password)
-        server.sendmail(sender, receiver, msg.as_string())
+    if response.status_code == 200:
         print("Email sent successfully!")
+    else:
+        print(f"Failed to send email: {response.json()}")
+
+
