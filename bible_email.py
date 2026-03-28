@@ -42,7 +42,6 @@ def get_reflection(verse_text, verse_reference):
             ]
         }
     )
-    data = response.json()
     print(data)
     return data["choices"][0]["message"]["content"]
 
