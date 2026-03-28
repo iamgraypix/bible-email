@@ -8,16 +8,16 @@ on:
     - cron: '0 7 * * *'    # 3PM Philippine time
     - cron: '0 10 * * *'   # 6PM Philippine time
     - cron: '0 13 * * *'   # 9PM Philippine time
-  workflow_dispatch:       # allows manual trigger
+  workflow_dispatch:
 
 jobs:
   send-verse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -29,4 +29,5 @@ jobs:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
           RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python bible_email.py
